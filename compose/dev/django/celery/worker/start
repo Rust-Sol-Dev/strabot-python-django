@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+# NOTE: As of `watchfiles==0.13` this didn't work (including omitting the `config stratbot` part).
+#  Leaving it here in case the issue is/was with `watchfiles` and an update fixes this.
+# watchfiles 'celery -A config.celery_app worker -l INFO' config stratbot
+watchgod celery.__main__.main --args -A config.celery_app worker -l INFO

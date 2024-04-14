@@ -1,0 +1,2 @@
+docker run -e DATAFLOW_NAME=dataflow_potential_outside_bars --name dataflow_potential_outside_bars dataflows
+docker run -e DATAFLOW_NAME=dataflow_alpaca_prices -e DATAFLOW_STATEFUL=1 --name dataflow_potential_outside_bars dataflows

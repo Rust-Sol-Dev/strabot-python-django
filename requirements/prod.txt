@@ -1,0 +1,15 @@
+# PRECAUTION: avoid production dependencies that aren't in development
+
+-r base.txt
+
+# WSGI
+# ------------------------------------------------------------------------------
+gunicorn==21.2.0  # https://github.com/benoitc/gunicorn
+
+# Django
+# ------------------------------------------------------------------------------
+django-anymail==10.2  # https://github.com/anymail/django-anymail
+
+# Sentry
+# ------------------------------------------------------------------------------
+sentry-sdk==1.38.0  # https://github.com/getsentry/sentry-python

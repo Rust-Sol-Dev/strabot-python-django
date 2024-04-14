@@ -1,0 +1,44 @@
+{% extends "account/base.html" %}
+{% load static i18n account %}
+
+{% block title %}{% trans "Confirm Email Address" %}{% endblock %}
+
+{% block card_image %}
+    <img class="rounded-l-lg" src="{% static 'images/account/email.jpg' %}" alt="login image">
+{% endblock card_image %}
+
+{% block card_title %}
+    Confirm Email Address
+{% endblock card_title %}
+
+
+{% block card_content %}
+<div>
+    <p class="block mb-2 text-md font-medium text-gray-900 dark:text-gray-400">
+        {% if confirmation %}
+            {% user_display confirmation.email_address.user as user_display %}
+            {% blocktrans with confirmation.email_address.email as email %}
+                Please verify that <span class="text-black dark:text-white">{{ email }}</span> is an alternate email
+                address for user <span class="text-black dark:text-white">{{ user_display }}</span>.
+            {% endblocktrans %}
+        {% else %}
+            {% url 'account_email' as email_url %}
+            {% blocktrans %}
+                This email confirmation link expired or is invalid. Please
+                <a href="{{ email_url }}">request a new link</a>.
+            {% endblocktrans %}
+        {% endif %}
+    </p>
+    {% if confirmation %}
+        <form method="post" action="{% url 'account_confirm_email' confirmation.key %}"
+              class="mt-8 space-y-6">
+            {% csrf_token %}
+            <button
+                class="py-3 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                type="submit">
+                {% trans 'Confirm' %}
+            </button>
+        </form>
+    {% endif %}
+</div>
+{% endblock card_content %}

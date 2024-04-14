@@ -1,0 +1,120 @@
+{% extends "flowbite/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Grid" %}{% endblock title %}
+
+
+{% block content %}
+    
+<div class="p-4 bg-white rounded-lg shadow sm:p-2 xl:p-2 dark:bg-gray-800">
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/styles/ag-theme-alpine.css">
+    <p class="block mb-2 my-2 text-md font-medium text-gray-900 dark:text-gray-400">
+        {% trans 'Market Overview' %}
+    </p>
+    <div id="myGrid" class="ag-theme-alpine" style="width: 1800px; height: 800px"></div>
+    <script>
+        {#class ClassComp {#}
+        {#    init(params) {#}
+        {#        this.eGui = document.createElement('div');#}
+        {#        this.eGui.innerHTML = `#}
+        {#            <button class="btn btn-blue" onclick="window.alert('TEST')">TV</button>#}
+        {#            <span>${params.value}</span>`;#}
+        {#    }#}
+        {#    getGui() {#}
+        {#        return this.eGui;#}
+        {#    }#}
+        {#    refresh() {#}
+        {#        return false;#}
+        {#    }#}
+        {#    destroy() {}#}
+        {# } #}
+        const gridOptions = {
+            columnDefs: [
+                { 
+                    field: 'symbol',
+                    filter: true
+                },
+                { 
+                    field: 'exchange' 
+                },
+                {
+                    field: 'price',
+                    filter: 'agNumberColumnFilter'
+                },
+                {
+                    field: 'atr',
+                    headerName: "ATR $",
+                    filter: 'agNumberColumnFilter'
+                },
+                {
+                    field: 'atr_percentage',
+                    headerName: "ATR %",
+                    filter: 'agNumberColumnFilter'
+                },
+                { 
+                    field: 'as_of',
+                    headerName: "Last Updated",
+                    filter: 'agDateColumnFilter'
+                }
+            ],
+            defaultColDef: {
+                flex: 1,
+                minWidth: 150,
+                sortable: true,
+                resizable: true,
+                filterParams: {
+                    buttons: ['reset'],
+                },
+            },
+            rowSelection: 'multiple',
+        };        
+        const myGridElement = document.querySelector('#myGrid');
+        const api = agGrid.createGrid(myGridElement, gridOptions);
+        fetch('http://127.0.0.1:8000/api/symbols')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                api.setGridOption('rowData', data)
+            });
+    </script>
+</div>
+{% endblock %}
+
+
+
+{#<html>#}
+{#    <head>#}
+{#        <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>#}
+{#        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/styles/ag-grid.css">#}
+{#        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/styles/ag-theme-alpine.css">#}
+{#    </head>#}
+{#    <body>#}
+{#        <div class="p-4 bg-white rounded-lg shadow sm:p-2 xl:p-2 dark:bg-gray-800">#}
+{#            <div id="myGrid" class="ag-theme-alpine"></div>#}
+{#        </div>#}
+{#        <script>#}
+{#            // Grid Options: Contains all of the grid configurations#}
+{#            const gridOptions = {#}
+{#              // Row Data: The data to be displayed.#}
+{#              rowData: [#}
+{#                { make: "Tesla", model: "Model Y", price: 64950, electric: true },#}
+{#                { make: "Ford", model: "F-Series", price: 33850, electric: false },#}
+{#                { make: "Toyota", model: "Corolla", price: 29600, electric: false },#}
+{#              ],#}
+{#              // Column Definitions: Defines & controls grid columns.#}
+{#              columnDefs: [#}
+{#                { field: "make" },#}
+{#                { field: "model" },#}
+{#                { field: "price" },#}
+{#                { field: "electric" }#}
+{#              ]#}
+{#            };        #}
+{#    #}
+{#            // Your Javascript code to create the grid#}
+{#            const myGridElement = document.querySelector('#myGrid');#}
+{#            agGrid.createGrid(myGridElement, gridOptions);#}
+{#        </script>#}
+{#    </body>#}
+{#</html>#}

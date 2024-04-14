@@ -1,0 +1,60 @@
+{% extends "flowbite/base.html" %}
+{% load static i18n crispy_forms_tags dashtags humanize %}
+
+{% block title %}{% trans "Screener" %}: {{ symbol_type|title }}{% endblock title %}
+
+{% block content %}
+{% include 'flowbite/release_notes.html' %}
+
+<script>
+    var socket = new WebSocket('ws://' + window.location.host + '/ws/symbols/');
+    var requestId = 0;
+
+    function getNextRequestId() {
+        return ++requestId;
+    }
+
+    // Define the symbols this page is interested in
+    var symbols = {{ symbols_json|safe }};  // Example symbols
+    var lastPrices = {};  // Object to hold the last price of each symbol
+
+    socket.onopen = function(e) {
+        // Subscribe to symbols
+        symbols.forEach(function(symbol) {
+            var subscribeMessage = {
+                action: "subscribe",
+                symbol: symbol,
+                request_id: getNextRequestId()
+            };
+            socket.send(JSON.stringify(subscribeMessage));
+        });
+    };
+
+    socket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        console.log(data);
+        var priceElement = document.getElementById(data.symbol);
+        priceElement.innerText = data.price;
+
+        // Determine the color based on the comparison with the last price
+        if (lastPrices[data.symbol] !== undefined) {  // Ensure there was a previous price to compare with
+            if (data.price > lastPrices[data.symbol]) {
+                priceElement.className = 'green-500';
+            } else if (data.price < lastPrices[data.symbol]) {
+                priceElement.className = 'red-500';
+            }  // No color change if the price is the same
+        }
+
+        // Update the last price for this symbol
+        lastPrices[data.symbol] = data.price;
+    };
+</script>
+
+<div class="p-2 bg-gray-100 rounded-lg shadow sm:p-2 xl:p-2 dark:bg-gray-800 text-white">
+{% for symbol in symbols_list %}
+    <div>
+        {{ symbol }} - <span id="{{ symbol }}"></span>
+    </div>
+{% endfor %}
+</div>
+{% endblock content %}

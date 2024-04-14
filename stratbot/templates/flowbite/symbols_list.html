@@ -1,0 +1,93 @@
+{% extends "vertical_base.html" %}
+6{% load static i18n crispy_forms_tags %}
+
+{% block title %}{% trans "Screener" %}: Tickers Currently Scanned{% endblock title %}
+
+{% block content %}
+  <!-- Start Content-->
+  <div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box">
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+              <li class="breadcrumb-item active">Symbols</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+      <div class="col-xl-6">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="header-title mb-2">SYMBOLS SCANNED</h4>
+
+            <p class="text-muted font-14 mb-2">Currently, stock symbols are manually added and removed. Crypto symbols are
+              updated every 30 minutes based on 24 hour volume exceeding $20M USD.
+            </p>
+
+            <ul class="nav nav-tabs nav-bordered mb-3" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a href="#stock-symbols" data-bs-toggle="tab" aria-expanded="false" class="nav-link active"
+                   aria-selected="true" role="tab">
+                  Stocks
+                </a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a href="#crypto-symbols" data-bs-toggle="tab" aria-expanded="true" class="nav-link"
+                   aria-selected="false" tabindex="-1" role="tab">
+                  Crypto
+                </a>
+              </li>
+            </ul> <!-- end nav-->
+            <div class="tab-content">
+              <div class="tab-pane show active" id="stock-symbols" role="tabpanel">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Company Name</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for symbol in stock_symbols %}
+                    <tr>
+                      <td>{{ symbol.symbol }}</td>
+                      <td>{{ symbol.company_meta.name }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- end preview-->
+
+              <div class="tab-pane code" id="crypto-symbols" role="tabpanel">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th scope="col">Symbol</th>
+{#                    <th scope="col">-</th>#}
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for symbol in crypto_symbols %}
+                    <tr>
+                      <td>{{ symbol.symbol }}</td>
+{#                      <td>{{ symbol.company_meta.name }}</td>#}
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div> <!-- end preview code-->
+            </div> <!-- end tab-content-->
+          </div> <!-- end card-body -->
+        </div> <!-- end card-->
+      </div> <!-- end col -->
+    </div>
+  </div>
+{% endblock %}

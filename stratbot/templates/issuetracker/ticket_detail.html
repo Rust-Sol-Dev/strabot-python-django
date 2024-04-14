@@ -1,0 +1,28 @@
+{% extends 'flowbite/base_no_nav.html' %}
+{% load static i18n tailwind_filters %}
+
+{% block content %}
+<!-- Card -->
+<div class="justify-center items-center w-full bg-white rounded-lg shadow lg:flex md:mt-0 lg:max-w-screen-lg 2xl:max:max-w-screen-lg xl:p-0 dark:bg-gray-800">
+    <div class="my-6 p-6 space-y-8 w-full sm:p-8 lg:p-16 lg:py-0">
+        <h2 class="text-2xl font-bold text-gray-900 lg:text-3xl dark:text-white">
+            Ticket Details
+        </h2>
+        <div class="block mb-2 text-md font-medium text-gray-900 dark:text-gray-400">
+            <p class="my-2"><strong>Title</strong>: {{ ticket.title }}</p>
+            <p class="my-2"><strong>Issue Type:</strong> {{ ticket.get_issue_type_display }}</p>
+            <p class="my-2"><strong>Description:</strong> {{ ticket.description }}</p>
+            <p class="my-2"><strong>Status:</strong> {{ ticket.get_status_display }}</p>
+            <p class="my-2"><strong>Priority:</strong> {{ ticket.get_priority_display }}</p>
+            <p class="my-2"><strong>Date Submitted:</strong> {{ ticket.date_submitted|date:"Y-m-d H:i" }}</p>
+            <p class="my-2"><strong>Date Modified:</strong> {{ ticket.date_modified|date:"Y-m-d H:i" }}</p>
+{#            <a href="{% url 'ticket-update' pk=ticket.pk %}">Update</a>#}
+{#            <a href="{% url 'ticket-delete' pk=ticket.pk %}">Delete</a>#}
+        </div>
+        <a href="{% url 'scanner:default-redirect' %}" type="button"
+           class="py-3 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+            Dashboard
+        </a>
+    </div>
+</div>
+{% endblock content %}

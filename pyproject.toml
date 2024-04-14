@@ -1,0 +1,56 @@
+# `black`: https://github.com/psf/black
+[tool.black]
+target-version = ["py310"]
+
+# `isort`: https://github.com/PyCQA/isort
+[tool.isort]
+add_imports = "from __future__ import annotations"
+default_section = "THIRDPARTY"
+known_first_party = ["stratbot"]
+profile = "black"
+skip = ["venv/"]
+skip_glob = ["**/migrations/*.py"]
+
+# `mypy`: https://github.com/python/mypy
+[tool.mypy]
+check_untyped_defs = true
+ignore_missing_imports = true
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+python_version = "3.10"
+show_error_codes = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+# # Django migrations should not produce any errors.
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+# `allow_untyped_defs` isn't currently set to `false` in the parent configuration, but I
+# wanted to keep this section here to quickly show how to do the
+# `[[tool.mypy.overrides]]` section.
+allow_untyped_defs = true
+
+# `django_stubs`: https://github.com/typeddjango/django-stubs
+[tool.django-stubs]
+django_settings_module = "config.settings.test"
+
+[tool.pytest.ini_options]
+addopts = """\
+    --ds=config.settings.test
+    --reuse-db
+    --strict-config
+    --strict-markers
+    """
+python_files = ["tests.py", "test_*.py"]
+norecursedirs = ["node_modules"]
+
+# `coverage`: https://github.com/nedbat/coveragepy
+[tool.coverage.run]
+include = ["stratbot/*"]
+omit = ["*migrations*", "*tests*"]
+plugins = ["django_coverage_plugin"]

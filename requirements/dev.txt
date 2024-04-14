@@ -1,0 +1,49 @@
+-r base.txt
+-r docs.txt
+
+# General
+# ------------------------------------------------------------------------------
+watchfiles==0.21.0  # https://github.com/samuelcolvin/watchfiles
+watchgod==0.8.2  # https://github.com/samuelcolvin/watchfiles/tree/watchgod
+Werkzeug[watchdog]==3.0.1 # https://github.com/pallets/werkzeug
+
+# Testing
+# ------------------------------------------------------------------------------
+pytest==7.4.3  # https://github.com/pytest-dev/pytest
+pytest-django==4.7.0  # https://github.com/pytest-dev/pytest-django
+pytest-mock==3.12.0  # https://github.com/pytest-dev/pytest-mock
+pytest-sugar==0.9.7  # https://github.com/Frozenball/pytest-sugar
+pytest-xdist==3.5.0  # https://github.com/pytest-dev/pytest-xdist
+
+# Test Coverage
+coverage==7.3.2  # https://github.com/nedbat/coveragepy
+django-coverage-plugin==3.1.0  # https://github.com/nedbat/django_coverage_plugin
+pytest-cov==4.1.0  # https://github.com/pytest-dev/pytest-cov
+
+# Static Typing
+# ------------------------------------------------------------------------------
+# django-stubs==1.10.1  # https://github.com/typeddjango/django-stubs
+djangorestframework-stubs==3.14.5  # https://github.com/typeddjango/djangorestframework-stubs
+mypy==1.7.1  # https://github.com/python/mypy
+
+# Code quality
+# ------------------------------------------------------------------------------
+black==23.11.0  # https://github.com/psf/black
+flake8==6.1.0  # https://github.com/PyCQA/flake8
+pre-commit==3.6.0  # https://github.com/pre-commit/pre-commit
+pylint-celery==0.3  # https://github.com/PyCQA/pylint-celery
+pylint-django==2.5.5  # https://github.com/PyCQA/pylint-django
+
+# Factories and Mock/Fake Data
+# ------------------------------------------------------------------------------
+factory-boy==3.3.0  # https://github.com/FactoryBoy/factory_boy
+Faker==20.1.0  # https://github.com/joke2k/faker
+
+# Debugging
+# ------------------------------------------------------------------------------
+#django-debug-toolbar==4.2.0  # https://github.com/jazzband/django-debug-toolbar
+ipdb==0.13.13  # https://github.com/gotcha/ipdb
+
+# Misc/Useful
+# ------------------------------------------------------------------------------
+pyperclip==1.8.2  # https://github.com/asweigart/pyperclip

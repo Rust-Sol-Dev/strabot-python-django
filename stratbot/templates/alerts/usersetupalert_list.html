@@ -1,0 +1,163 @@
+{%  extends 'flowbite/base.html' %}
+
+{% block extra_javascript %}
+<script src="https://js.pusher.com/8.0.1/pusher.min.js"></script>
+<!-- Loading the TradingView Widget script -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+{% if user.is_authenticated and user.realtime_alerts_channel_name %}
+{% comment %}
+Thanks to https://dashboard.pusher.com/apps/{your_app_id}/getting_started
+for the main core of the code below. I added some additional
+things on top of it later.
+{% endcomment %}
+<script>
+  var alertsEventCallbacks = [];
+  window.alertsEventCallbacks = alertsEventCallbacks;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    {% if debug %}
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+    console.log("Initializing Pusher...");
+    {% endif %}
+
+    var pusherKey = "{{ pusher_key }}";
+    var pusherCluster = "{{ pusher_cluster }}";
+    var pusher = new Pusher(pusherKey, {cluster: pusherCluster});
+    window.pusher = pusher;
+
+    var alertsChannelName = "{{ user_setup_alert_realtime_alerts_channel_name }}";
+    var channel = pusher.subscribe(alertsChannelName);
+    window.alertsChannel = channel
+
+    var alertsEventName = "{{ user_setup_alert_realtime_event_name }}";
+    channel.bind(alertsEventName, function(data) {
+      alertsEventCallbacks.forEach(function(callback) {
+        callback(data, alertsEventName, alertsChannelName);
+      });
+    });
+
+    {% if debug %}
+    console.log("Pusher Initialized!");
+    console.log(`Pusher Alerts Channel Name: ${alertsChannelName}`);
+    console.log(`Pusher Alerts Event Name: ${alertsEventName}`);
+    {% endif %}
+  });
+</script>
+
+<script>
+    function userSetupAlertListPageHandleRealtimeEvent(data, eventName, channelName) {
+        console.log(data);
+        console.log(data.id);
+        const table = document.querySelector("#user_setup_alert_table tbody");
+        let newRow = document.createElement("tr");
+        newRow.classList.add(data["symbol_type"]);
+
+        const keys = ['timestamp', 'symbol', 'tf', 'pattern', 'direction', 'tags'];  // Key order aligning with the table headers
+
+        keys.forEach(function (key){
+            let newCell = document.createElement("td");
+            newCell.textContent = data[key] || '';  // If key doesn't exist in data object its value will be ''
+            newRow.appendChild(newCell);
+        });
+
+        table.prepend(newRow);
+    }
+    alertsEventCallbacks.push(userSetupAlertListPageHandleRealtimeEvent);
+
+    function filterSymbolType(type) {
+        filterType = type;
+        var rows = document.querySelector("#user_setup_alert_table tbody").rows;
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            // Hide the row if it doesn't have the corresponding symbol type class
+            row.style.display = row.classList.contains(type) || type === '' ? '' : 'none';
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    // Add event listener to all cells with class "symbol-cell"
+    let symbolCells = document.querySelectorAll('.symbol-cell');
+    symbolCells.forEach(function(cell) {
+        cell.addEventListener('click', function(e) {
+            let selectedSymbol = this.innerText;
+            let selectedTimeframe = this.parentElement.cells[1].innerText;  // Assuming timeframe is in the second column
+
+            // Clear the widget container
+            let container = document.getElementById('tradingview_d746f2');
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            // Create and load the new TradingView widget
+            new TradingView.widget(
+              {
+                "width": "100%",
+                "height": "100%",
+                "symbol": selectedSymbol,
+                "interval": selectedTimeframe,
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "container_id": "tradingview_d746f2"
+              });
+        });
+    });
+</script>
+
+{% endif %}
+{% endblock extra_javascript %}
+
+
+{% block content %}
+<div class="mb-4 text-gray-700 uppercase dark:text-gray-400">
+  <button onclick="filterSymbolType('')">All</button>
+  <button onclick="filterSymbolType('stock')">Stock</button>
+  <button onclick="filterSymbolType('crypto')">Crypto</button>
+</div>
+
+<div class="flex h-screen">
+    <div class="w-1/2 overflow-x-auto shadow-md sm:rounded-lg">
+        <table id="user_setup_alert_table" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="p-1">Timestamp</th>
+                    <th scope="col" class="p-1">Symbol</th>
+                    <th scope="col" class="p-1">TF</th>
+                    <th scope="col" class="p-1">Setup</th>
+                    <th scope="col" class="p-1">Direction</th>
+                    <th scope="col" class="p-1">Tag</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for alert in object_list|slice:"-20:" %}
+                <tr class="{{ alert.setup.symbol_rec.symbol_type }}">
+                    <td>{{ alert.setup.initial_trigger }}</td>
+                    <td class="symbol-cell">{{ alert.data.symbol }}</td>
+                    <td>{{ alert.data.tf }}</td>
+                    <td>{{ alert.setup.pattern.0 }} - {{ alert.setup.pattern.1 }}</td>
+                    <td>{%  if alert.setup.direction == 1 %}BULL{% else %}BEAR{% endif %}</td>
+                    <td>{{ alert.setup.candle_tag }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No alerts yet.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="w-1/2 h-half">
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container">
+            <div id="tradingview_d746f2" class="h-full bg-white"></div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

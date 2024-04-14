@@ -1,0 +1,45 @@
+{% load static i18n compress %}
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+{% include 'flowbite/head.html' %}
+
+<body class="bg-gray-50 dark:bg-gray-900">
+    <script>
+        document.body.addEventListener('htmx:configRequest', function (evt) {
+            evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        });
+    </script>
+    <main class="bg-gray-200 dark:bg-gray-900">
+        <div class="flex flex-col justify-center items-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">
+            <a href="{% url 'scanner:default-redirect' %}" class="flex justify-center items-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
+                <img src="{% static 'images/logo.png' %}" class="mr-4 h-11 bg-black dark:bg-transparent" alt="STAT Logo">
+                <span>STAT Analytics</span>
+            </a>
+            {% block content %}{% endblock content %}
+        </div>
+    </main>
+    {% include "flowbite/footer.html" %}
+
+    <!-- Javascript
+    ================================================== -->
+    {% block javascript %}
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XR475TBBKB"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-XR475TBBKB');
+        </script>
+    {% endblock javascript %}
+
+    {% block extra_javascript %}{% endblock %}
+    <script src="{%  static 'app.bundle.js' %}"></script>
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>#}
+</body>
+
+</html>

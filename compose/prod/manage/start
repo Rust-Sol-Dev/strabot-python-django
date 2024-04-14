@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+python merge_production_dotenvs_in_dotenv.py
+python manage.py ${DJANGO_COMMAND}

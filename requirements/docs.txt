@@ -1,0 +1,7 @@
+# Documentation
+# ------------------------------------------------------------------------------
+docutils==0.20.1  # https://pypi.org/project/docutils
+esbonio==0.16.1  # https://github.com/swyddfa/esbonio
+rstcheck==6.1.2  # https://github.com/myint/rstcheck
+sphinx-autobuild==2021.3.14 # https://github.com/GaretJax/sphinx-autobuild
+sphinx==7.2.5  # https://github.com/sphinx-doc/sphinx

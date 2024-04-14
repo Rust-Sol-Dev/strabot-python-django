@@ -1,0 +1,97 @@
+{% extends "account/base.html" %}
+{% load static i18n tailwind_filters socialaccount %}
+
+{% block title %}{% trans "Email" %}{% endblock %}
+
+{% block card_image %}
+<img class="rounded-l-lg" src="{% static 'images/account/email.jpg' %}" alt="login image">
+{% endblock card_image %}
+
+{% block card_title %}
+Email Addresses
+{% endblock card_title %}
+
+
+{% block card_content %}
+{% if user.emailaddress_set.all %}
+<div>
+    <p class="block mb-2 text-md font-medium text-gray-900 dark:text-gray-400">
+        {% trans 'The following e-mail addresses are associated with your account:' %}
+    </p>
+</div>
+<form action="#" class="email_list" method="post">
+    {% csrf_token %}
+    <fieldset class="blockLabels">
+        {% for emailaddress in user.emailaddress_set.all %}
+        <div class="radio py-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+            <label for="email_radio_{{forloop.counter}}" class="{% if emailaddress.primary %}primary_email{%endif%}">
+            <input id="email_radio_{{forloop.counter}}" type="radio" name="email" {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{%endif %} value="{{emailaddress.email}}"/>
+                {{ emailaddress.email }}
+
+                {% if emailaddress.verified %}
+                <span class="ml-3 my-1 py-0 px-5 w-full text-sm font-medium text-center text-white rounded-lg bg-green-700 sm:w-auto dark:bg-green-600">
+                    {% trans "Verified" %}
+                </span>
+                {% else %}
+                <span class="ml-3 my-1 py-0 px-5 w-full text-sm font-medium text-center text-white rounded-lg bg-red-700 sm:w-auto dark:bg-red-600">
+                    {% trans "Unverified" %}
+                </span>
+                {% endif %}
+
+                {% if emailaddress.primary %}
+                <span class="ml-3 my-1 py-0 px-5 w-full text-sm font-medium text-center text-white rounded-lg bg-green-700 sm:w-auto dark:bg-green-600">
+                    {% trans "Primary" %}
+                </span>
+                {% endif %}
+            </label>
+        </div>
+        {% endfor %}
+
+        <div class="form-group mt-1">
+              <button class="my-1 py-0.5 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit" name="action_primary">
+                  {% trans 'Make Primary' %}
+              </button>
+              <button class="my-1 py-0.5 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit" name="action_send">
+                  {% trans 'Re-send Verification' %}
+              </button>
+              <button class="my-1 py-0.5 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit" name="action_remove">
+                  {% trans 'Remove' %}
+              </button>
+        </div>
+    </fieldset>
+</form>
+{% else %}
+<p><strong>{% trans 'Warning:'%}</strong> {% trans "You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc." %}</p>
+{% endif %}
+
+<form method="post" action="#" class="add_email">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="py-3 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" name="action_add" type="submit">
+        {% trans "Add E-mail" %}
+    </button>
+</form>
+<div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+    Back to <a href="/users/1/" class="text-primary-700 hover:underline dark:text-primary-500">profile</a>
+</div>
+{% endblock %}
+
+
+{# TODO: check if this works #}
+{% block inline_javascript %}
+{{ block.super }}
+<script type="text/javascript">
+    window.addEventListener('DOMContentLoaded',function() {
+        const message = "{% trans 'Do you really want to remove the selected e-mail address?' %}";
+        const actions = document.getElementsByName('action_remove');
+        if (actions.length) {
+            actions[0].addEventListener("click", function(e) {
+                if (!confirm(message)) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+    $('.form-group').removeClass('row');
+</script>
+{% endblock %}

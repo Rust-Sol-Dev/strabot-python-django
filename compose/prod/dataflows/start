@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+python merge_production_dotenvs_in_dotenv.py
+
+if [[ "${DATAFLOW_STATEFUL:-0}" == "1" ]]; then
+  if [ ! -d "/state/${DATAFLOW_NAME}" ]; then
+    mkdir -p /state/${DATAFLOW_NAME}
+    python -m bytewax.recovery /state/${DATAFLOW_NAME} 1
+  fi
+  RUST_BACKTRACE=1 python -m bytewax.run ${DATAFLOW_NAME} -r /state/${DATAFLOW_NAME} -s 30 -b 300
+else
+  RUST_BACKTRACE=1 python -m bytewax.run ${DATAFLOW_NAME}
+fi

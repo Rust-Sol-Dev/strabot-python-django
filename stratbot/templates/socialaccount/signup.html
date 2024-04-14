@@ -1,0 +1,33 @@
+{% extends "socialaccount/base.html" %}
+{% load i18n static tailwind_filters %}
+
+{% block title %}{% trans "Signup" %}{% endblock title %}
+
+{% block card_image %}
+<img class="rounded-l-lg bg-white" src="{% static 'images/account/login.jpg' %}" alt="login image">
+{% endblock card_image %}
+
+{% block card_title %}
+{% trans "Sign Up" %}
+{% endblock card_title %}
+
+
+{% block card_content %}
+<div>
+    <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+        {% blocktrans with provider_name=account.get_provider.name site_name=site.name %}
+        You are about to use your {{provider_name}} account to login to {{site_name}}.
+        As a final step, please complete the following form:{% endblocktrans %}
+    </p>
+</div>
+<form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+  {% csrf_token %}
+  {{ form|crispy }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <button type="submit" class="py-3 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+      {% trans "Sign Up" %} &raquo;
+  </button>
+</form>
+{% endblock card_content %}

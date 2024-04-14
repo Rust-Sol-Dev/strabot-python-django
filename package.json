@@ -1,0 +1,12 @@
+{
+  "name": "stratbot",
+  "private": true,
+  "workspaces": [
+    "stratbot",
+    "stratbot/static/flowbite"
+  ],
+  "dependencies": {
+    "flowbite": "^1.8.1",
+    "tailwindcss": "^3.3.3"
+  }
+}

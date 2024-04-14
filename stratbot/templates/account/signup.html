@@ -1,0 +1,37 @@
+{% extends "account/base.html" %}
+{% load static i18n tailwind_filters %}
+
+{% block title %}{% trans "New User Registration" %}{% endblock title %}
+
+{% block card_image %}
+<img class="border-1 border-black rounded-l-lg" src="{% static 'images/account/signup.jpg' %}" alt="signup image">
+{% endblock card_image %}
+
+{% block card_title %}
+New User Registration
+{% endblock card_title %}
+
+{% block card_content %}
+<div>
+    <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+        Create your account! It takes less than a minute, and you'll receive access to
+        advanced features.
+    </p>
+</div>
+
+<form method="POST" class="mt-8 space-y-6" action="#">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <button type="submit"
+            class="py-3 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+        Signup
+    </button>
+    <div class="ml-auto text-sm my-auto text-gray-700 dark:text-gray-400">
+        Already have an account?
+        <a href="{% url 'account_login' %}" class="text-primary-700 hover:underline dark:text-primary-500">Login</a>
+    </div>
+</form>
+{% endblock card_content %}

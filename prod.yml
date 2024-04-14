@@ -1,0 +1,347 @@
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  production_traefik: {}
+  redis_data: {}
+  state_data: {}
+
+services:
+#  django: &django
+#    build:
+#      context: .
+#      dockerfile: ./compose/prod/django/Dockerfile
+#    image: stratbot_prod_django
+#    platform: linux/x86_64
+#    depends_on:
+#      - postgres
+#      - redis
+#    env_file:
+#      - ./.envs/.prod/.django.env
+#      - ./.envs/.prod/.postgres.env
+#    command: /start
+#
+#  postgres:
+#    build:
+#      context: .
+#      dockerfile: ./compose/prod/postgres/Dockerfile
+#    image: stratbot_prod_postgres
+#    volumes:
+#      - production_postgres_data:/storage/postgresql/data:Z
+#      - production_postgres_data_backups:/storage/backup/postgresql:z
+#    env_file:
+#      - ./.envs/.prod/.postgres.env
+#
+#  traefik:
+#    build:
+#      context: .
+#      dockerfile: ./compose/prod/traefik/Dockerfile
+#    image: stratbot_prod_traefik
+#    depends_on:
+#      - django
+#    volumes:
+#      - production_traefik:/etc/traefik/acme:z
+#    ports:
+#      - "0.0.0.0:80:80"
+#      - "0.0.0.0:443:443"
+#      - "0.0.0.0:5555:5555"
+#
+#  redis:
+#    build:
+#      context: ./compose/prod/redis
+#      dockerfile: Dockerfile
+#    image: custom-redis-stack
+#    container_name: redis-stack
+#    restart: always
+#    ports:
+#      - "6379:6379"
+#    volumes:
+#      - redis_data:/data
+#
+#  celeryworker:
+#    <<: *django
+#    image: stratbot_prod_celeryworker
+#    command: /start-celeryworker
+#
+#  celerybeat:
+#    <<: *django
+#    image: stratbot_prod_celerybeat
+#    command: /start-celerybeat
+#
+#  flower:
+#    <<: *django
+#    image: stratbot_prod_flower
+#    command: /start-flower
+
+  # ===============================================================
+  # dataflows
+  # ===============================================================
+
+  alpaca_trades:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: alpaca_trades
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_alpaca_trades_stateful
+      - DATAFLOW_STATEFUL=1
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  alpaca_prices:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: alpaca_prices
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_alpaca_prices
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  alpaca_spreads:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: alpaca_spreads
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_alpaca_spreads
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  gappers:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: gappers
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_gappers
+      - DATAFLOW_STATEFUL=1
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  binance_trades_stateful:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: binance_trades_stateful
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_binance_trades_stateful
+      - DATAFLOW_STATEFUL=1
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  binance_trades:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: binance_trades
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_binance_trades
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  binance_liquidations:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: binance_liquidations
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_binance_liquidations
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  create_setups:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: create_setups
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_create_setups
+      - DATAFLOW_STATEFUL=1
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+#  expando_ftfc:
+#    build:
+#      context: .
+#      dockerfile: ./compose/prod/dataflows/Dockerfile
+#    image: django_prod
+#    container_name: expando_ftfc
+#    env_file:
+#      - .env
+#    environment:
+#      - DATAFLOW_NAME=dataflow_expando_ftfc
+#      - DATAFLOW_STATEFUL=1
+#    volumes:
+#      - state_data:/state
+#    restart: always
+
+  ftfc:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: ftfc
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_ftfc
+      - DATAFLOW_STATEFUL=1
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  potential_outside_bars:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: potential_outside_bars
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_potential_outside_bars
+      - DATAFLOW_STATEFUL=1
+    volumes:
+      - state_data:/state
+    network_mode: "host"
+    restart: always
+
+  # ===============================================================
+  # websockets
+  # ===============================================================
+
+  binance_websockets:
+    build:
+      context: .
+      dockerfile: ./compose/prod/manage/Dockerfile
+    image: django_prod
+    container_name: binance_websockets
+    env_file:
+      - .env
+    environment:
+      - DJANGO_COMMAND=binance_ws
+    network_mode: "host"
+    restart: always
+
+  alpaca_websockets:
+    build:
+      context: .
+      dockerfile: ./compose/prod/manage/Dockerfile
+    image: django_prod
+    container_name: alpaca_websockets
+    env_file:
+      - .env
+    environment:
+      - DJANGO_COMMAND=alpaca_ws
+    network_mode: "host"
+    restart: always
+
+  # ===============================================================
+  # consumers
+  # ===============================================================
+
+  alpaca_bar_consumer:
+    build:
+      context: .
+      dockerfile: ./compose/prod/manage/Dockerfile
+    image: django_prod
+    container_name: alpaca_bar_consumer
+    env_file:
+      - .env
+    environment:
+      - "DJANGO_COMMAND=refresh_bars --alpaca"
+    network_mode: "host"
+    restart: always
+
+  alpaca_quote_consumer:
+    build:
+      context: .
+      dockerfile: ./compose/prod/manage/Dockerfile
+    image: django_prod
+    container_name: alpaca_quote_consumer
+    env_file:
+      - .env
+    environment:
+      - "DJANGO_COMMAND=refresh_quotes --alpaca"
+    network_mode: "host"
+    restart: always
+
+  binance_bar_consumer:
+    build:
+      context: .
+      dockerfile: ./compose/prod/manage/Dockerfile
+    image: django_prod
+    container_name: binance_bar_consumer
+    env_file:
+      - .env
+    environment:
+      - "DJANGO_COMMAND=refresh_bars --binance"
+    network_mode: "host"
+    restart: always
+
+  binance_quote_consumer:
+    build:
+      context: .
+      dockerfile: ./compose/prod/manage/Dockerfile
+    image: django_prod
+    container_name: binance_quote_consumer
+    env_file:
+      - .env
+    environment:
+      - "DJANGO_COMMAND=refresh_quotes --binance"
+    network_mode: "host"
+    restart: always
+
+  dataframes_to_redis:
+    build:
+      context: .
+      dockerfile: ./compose/prod/dataflows/Dockerfile
+    image: django_prod
+    container_name: dataframes_to_redis
+    env_file:
+      - .env
+    environment:
+      - DATAFLOW_NAME=dataflow_df
+    network_mode: "host"
+    restart: always

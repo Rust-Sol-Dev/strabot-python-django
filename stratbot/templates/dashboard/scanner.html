@@ -1,0 +1,242 @@
+{% extends "vertical_base.html" %}
+{% load static i18n crispy_forms_tags dashtags humanize %}
+
+{% block title %}{% trans "Screener" %}: {{ symbol_type|title }}{% endblock title %}
+
+{% block content %}
+  <!-- Start Content-->
+  <div class="container-fluid">
+
+    <!-- Beta Warning -->
+    <div class="row">
+      <div class="alert alert-warning alert-dismissible fade show text-center mt-2" role="alert">
+        BETA VERSION - USE WITH CAUTION
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div> <!-- End Beta Warning -->
+
+    <!-- Important Notes -->
+    <div class="row">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="header-title mb-2">IMPORTANT NOTES</h4>
+          <ul>
+            <li class="mb-2">
+              We do not currently have full market coverage (it's incredibly expensive), so OHLC values on intraday
+              timeframes may be off by a few cents compared to TradingView, thinkorswim, and other brokers.
+            </li>
+            <li>
+              Setups on the 15, 30, 60, 4H, and D timeframes are re-processed at 12:15am EST each day and include full
+              market coverage so OHLC values should match your platform.
+            </li>
+          </ul>
+
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#scrollable-modal">
+            How This Works
+          </button>
+          <div class="modal fade" id="scrollable-modal" tabindex="-1" role="dialog"
+               aria-labelledby="scrollableModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="scrollableModalTitle">Scanner Details - Updated: 2023-06-30</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                  This section will be updated over time. For now, here are some details about the scanner.
+                  <hr style="border-top: 1px solid;">
+
+                  Crypto data from Bybit with additional exchanges coming in the future.
+                  <br><br>
+
+                  RR: estimate using a stop-loss at 50% of the trigger candle<br>
+                  PMG: identified by 5 or more consecutive HH/LL
+                  <br><br>
+
+                  When TFC is displayed in white, last price == open (no direction).
+                  <br><br>
+
+                  IMPORTANT: This website is a tool. As always, use your own judgement and rules when entering and
+                  exiting trades.
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
+        </div>
+      </div>
+    </div> <!-- End Important Notes -->
+
+    <!-- start page title -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box">
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+              <li class="breadcrumb-item active">{{ symbol_type|title }}</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="col-12">
+      {% crispy setup_filter_form %}
+    </div>
+
+    <div class="container-fluid p-0 my-3">
+      <nav class="navbar navbar-light bg-light" style="padding-left: 5px;">
+        <form class="form-inline" id="tf-list">
+          <a class="btn btn-xs {% if selected_tf == 'all' %}btn-secondary{% else %}btn-outline-secondary{% endif %}"
+             role="button" data-tf="all" href="{% url 'scanner:scanner' symbol_type=symbol_type %}?tf=">ALL</a>
+          {% for timeframe in timeframes %}
+            <a
+              class="btn btn-xs {% if selected_tf == timeframe %}btn-secondary{% else %}btn-outline-secondary{% endif %}"
+              role="button"
+              data-tf="{{ timeframe }}" href="{% url 'scanner:scanner' symbol_type=symbol_type %}?tf={{ timeframe }}">{{ timeframe }}</a>
+          {% endfor %}
+        </form>
+      </nav>
+    </div>
+
+{#    <div class="row">#}
+{#        <div class="progress">#}
+{#          <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>#}
+{#          <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>#}
+{#          <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>#}
+{#        </div>#}
+{#    </div>#}
+
+    <div class="table-responsive scrollbar">
+      {% regroup object_list by tf as by_timeframe %}
+      {% for tf in by_timeframe %}
+        <table class="table table-hover">
+          <thead class="sticky-top">
+          <tr>
+            <th scope="col">SYMBOL</th>
+            <th scope="col">TFC</th>
+            <th scope="col">TF</th>
+            <th scope="col">STRAT</th>
+            <th scope="col">DIRECTION</th>
+            <th scope="col">PRICE</th>
+            <th scope="col">TRIGGER</th>
+            {#          <th scope="col">IN FORCE</th>#}
+            <th scope="col">T1</th>
+            <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Risk/Return using a stop at the 50% level of the previous candle">RR</th>
+            {#          <th scope="col">PMG</th>#}
+            <th scope="col">TAGS</th>
+            <th scope="col">VOLUME</th>
+{#            <th scope="col">RVOL</th>#}
+            <th scope="col">ATR 14D</th>
+            <th scope="col">EXPIRES</th>
+            {#          <th scope="col">SSS50</th>#}
+            {#          <th scope="col">NEGATED</th>#}
+          </tr>
+          </thead>
+          <tbody>
+          {% for setup in tf.list %}
+            <tr class="hover-actions-trigger m-1 p-1 {% bg_color_based_on_direction setup %}">
+            <td class="align-middle text-nowrap m-1 p-1">
+{#            <td class="align-middle text-nowrap m-1 p-1" data-bs-toggle="popover" #}
+{#                title="Popover title" #}
+{#                data-bs-content="Popover content goes here.">#}
+{#              <a href="{% url 'scanner:symbol-detail' setup.symbol_rec.pk %}">#}
+                <strong>{{ setup.symbol_rec.symbol }}</strong>
+{#              </a>#}
+            </td>
+            <td class="align-middle text-nowrap m-1 p-1">
+              <strong>{% tfc_to_html setup.symbol_rec.price setup.symbol_rec.tfc %}</strong>
+            </td>
+            <td class="align-middle text-nowrap m-1 p-1"><strong>{{ setup.tf }}</strong></td>
+            <td class="align-middle text-nowrap m-1 p-1">
+              <strong>{{ setup.pattern.0 }}-{{ setup.pattern.1 }}</strong>
+            </td>
+            <td class="align-middle text-nowrap m-1 p-1">
+              {% if setup.direction == 1 %}BULL{% else %}BEAR{% endif %}
+            </td>
+            <td class="align-middle text-nowrap m-1 p-1">{{ setup.symbol_rec.price }}</td>
+            <td class="align-middle text-nowrap m-1 p-1">{{ setup.trigger }}</td>
+            {#            <td class="align-middle text-nowrap">{{ setup.in_force }}</td>#}
+            <td class="align-middle text-nowrap m-1 p-1">{{ setup.targets.0 }}</td>
+            <td class="align-middle text-nowrap m-1 p-1">{{ setup.rr }}</td>
+            {#            <td class="align-middle text-nowrap"><strong>{{ setup.pmg }}</strong></td>#}
+
+            <td class="align-middle text-nowrap m-1 p-1">{{ setup.candle_tag }}</td>
+            <td class="align-middle text-nowrap m-1 p-1">
+              {{ setup.symbol_rec.todays_volume|divide:1_000_000|floatformat:"2" }} M
+            </td>
+{#            <td class="align-middle text-nowrap m-1 p-1">{% rvol setup %}</td>#}
+            <td class="align-middle text-nowrap m-1 p-1">
+              {%  if setup.trigger < 0.001 %}
+                ${{ setup.symbol_rec.calculate_atr|floatformat:"6" }}
+              {%  else %}
+                ${{ setup.symbol_rec.calculate_atr|floatformat:"2" }}
+              {%  endif %}
+            </td>
+            <td class="align-middle text-nowrap m-1 p-1">{{ setup.expires|date:"Y-m-d H:i e" }}</td>
+            {#            <td class="align-middle text-nowrap">{{ setup.potential_outside }}</td>#}
+            {#            <td class="align-middle text-nowrap">{{ setup.negated }}</td>#}
+          {% endfor %}
+          </tr>
+          </tbody>
+        </table><br>
+      {% endfor %}
+    </div>
+
+  </div> <!-- container -->
+{% endblock %}
+
+
+{% block extra_javascript %}
+{#  <script>#}
+{#    $(function () {#}
+{#      $('[data-toggle="tooltip"]').tooltip()#}
+{#    })#}
+{#  </script>#}
+
+  <script>
+      $(document).ready(function(){
+      $('[data-bs-toggle="popover"]').popover();
+  });
+  </script>
+
+  <script>
+    document.querySelectorAll("#tf-list a").forEach((linkElement) => {
+      let onTfLinkClick = (event) => {
+        event.preventDefault();
+        let element = event.target;
+        let tf = element.dataset.tf;
+        let dropdownElement = document.querySelector("#id_tf");
+        dropdownElement.selected = true
+        dropdownElement.value = tf;
+        let submitButton = document.querySelector("#setup-filter-form-id #submit-id-submit");
+        submitButton.click();
+      }
+      linkElement.addEventListener("click", onTfLinkClick);
+    });
+  </script>
+
+  <!-- Apex js -->
+  {#<script src="{% static 'js/vendor/apexcharts.min.js' %}"></script>#}
+
+  <!-- demo:js -->
+  {#<script src="https://apexcharts.com/samples/assets/stock-prices.js"></script>#}
+  {#<script src="https://apexcharts.com/samples/assets/series1000.js"></script>#}
+  {#<script src="https://apexcharts.com/samples/assets/github-data.js"></script>#}
+  {#<script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>#}
+{#  <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>#}
+{#  <script#}
+{#    src="https://unpkg.com/bootstrap-table@1.21.0/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js"></script>#}
+{% endblock %}
+
+
+{% block extra_css %}
+{#  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">#}
+{#  <link rel="stylesheet"#}
+{#        href="https://unpkg.com/bootstrap-table@1.21.0/dist/extensions/sticky-header/bootstrap-table-sticky-header.css">#}
+{% endblock extra_css %}

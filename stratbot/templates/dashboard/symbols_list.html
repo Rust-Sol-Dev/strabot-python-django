@@ -1,0 +1,92 @@
+{% extends "flowbite/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Tickers Scanned" %}{% endblock title %}
+
+{% block content %}
+<div class="p-4 bg-white rounded-lg shadow sm:p-2 xl:p-2 dark:bg-gray-800">
+    <p class="block mb-2 my-2 text-md font-medium text-gray-900 dark:text-gray-400">
+        {% blocktrans %}
+            Last Updated: 2023-09-08<br/><br/>
+            This list includes all tickers in the S&P 500 and QQQ ETFs, as well as other popular stocks.<br/>
+            Crypto symbols are updated every 30 minutes based on 24 hour volume exceeding $20M USD (paused).
+        {% endblocktrans %}
+    </p>
+
+    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent"
+            role="tablist">
+            <li class="mr-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg" id="stocks-tab" data-tabs-target="#stocks"
+                        type="button" role="tab" aria-controls="stocks" aria-selected="false">
+                    Stocks ({{ stock_symbols|length }})
+                </button>
+            </li>
+            <li class="mr-2" role="presentation">
+                <button
+                    class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                    id="crypto-tab" data-tabs-target="#crypto" type="button" role="tab" aria-controls="crypto"
+                    aria-selected="false">
+                    Crypto ({{ crypto_symbols|length }})
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div id="myTabContent">
+        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="stocks" role="tabpanel" aria-labelledby="stocks-tab">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Symbol
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Company Name
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for symbol in stock_symbols %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ symbol.symbol }}
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ symbol.company_meta.name }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="crypto" role="tabpanel" aria-labelledby="crypto-tab">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Symbol
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Company Name
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for symbol in crypto_symbols %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ symbol.symbol }}
+                        </th>
+                        <td class="px-6 py-4">
+    {#                            {{ symbol.company_meta.name }}#}
+                            -
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

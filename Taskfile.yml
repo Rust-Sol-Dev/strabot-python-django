@@ -1,0 +1,228 @@
+version: '3'
+
+env:
+  COMPOSE_FILE: prod.yml
+
+tasks:
+  # --- Docker-Specific Commands ---
+  build:
+    cmds:
+      - docker compose -f $COMPOSE_FILE build
+  up:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up django postgres redis mailhog celeryworker celerybeat node
+  back:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d postgres redis mailhog
+  celery:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d celeryworker celerybeat flower
+  flower:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d flower
+  down:
+    cmds:
+      - docker compose -f $COMPOSE_FILE down
+  # `downvv` instead of `downv` to avoid having accidental typos unintentionally nuke your volumes.
+  downvv:
+    cmds:
+      - docker compose -f $COMPOSE_FILE down -v
+  prune:
+    cmds:
+      - docker system prune
+
+  # --- Local (Outside of Docker) Commands ---
+
+  # Set up `npm` for the `lnode` command below.
+  npm:
+    cmds:
+      - npm install && npm cache clean --force
+  # Run development `npm` stuff (see `gulfile.js` and `package.json`).
+  node:
+    cmds:
+      - npm run dev
+  # Locally run the Django server (not in Docker).
+  rs:
+    cmds:
+      - python manage.py runserver 8020
+  # Locally run a Python shell (not in Docker).
+  s:
+    cmds:
+      - python manage.py shell_plus
+  # Make Django migrations.
+  mm:
+    cmds:
+      - python manage.py makemigrations
+  # Run Django migrations.
+  m:
+    cmds:
+      - python manage.py migrate
+  # Run Django `collectstatic` (without prompting for input).
+  cs:
+    cmds:
+      - python manage.py collectstatic --noinput
+  # Run Django `check`.
+  ch:
+    cmds:
+      - python manage.py check
+  # Run the tests.
+  t:
+    cmds:
+      - pytest .
+  # Run the tests, re-creating the database (and applying any fresh migrations, etc.).
+  tdb:
+    cmds:
+      - pytest . --create-db
+  # Run the tests with coverage.
+  tcov:
+    cmds:
+      - pytest . --cov=stratbot2
+  # Run the tests with coverage, re-creating the database.
+  tcovdb:
+    cmds:
+      - pytest . --cov=stratbot2 --create-db
+  # Run the tests in parallel.
+  tp:
+    cmds:
+      - pytest . -n auto --cov=stratbot2 --create-db
+  # Run the tests in parallel with coverage.
+  tpcov:
+    cmds:
+      - pytest . -n auto --cov=stratbot2
+  # Run the tests in parallel, re-creating the database.
+  tpdb:
+    cmds:
+      - pytest . -n auto --create-db
+  # Run the tests in parallel with coverage, re-creating the database.
+  tpcovdb:
+    cmds:
+      - pytest . -n auto --cov=stratbot2 --create-db
+  # Run `mypy`.
+  mp:
+    cmds:
+      - mypy .
+  # Run `flake8`.
+  fl:
+    cmds:
+      - flake8 .
+  # Run our own command to create default admin(s).
+  cda:
+    cmds:
+      - python manage.py create_default_admins
+  tailwind:
+    cmds:
+      - npx tailwindcss -i ./stratbot/static/src/input.css -o ./stratbot/static/src/output.css -w
+
+  # --- Local Commands That Can Be Run Inside Docker Instead ---
+  # Some may be slightly modified to work with/take advantage of the context of being run within Docker.
+
+  # Locally run the Django server (not in Docker).
+  drs:
+    cmds:
+      - docker compose up -d node
+      - docker compose up django
+  # Locally run a Python shell (not in Docker).
+  ds:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django python manage.py shell_plus
+  # Make Django migrations.
+  dmm:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django python manage.py makemigrations
+  # Run Django migrations.
+  dm:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django python manage.py migrate
+  # Run Django `collectstatic` (without prompting for input).
+  dcs:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django python manage.py collectstatic --noinput
+  # Run Django `check`.
+  dch:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django python manage.py check
+  # Run the tests.
+  dt:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest .
+  # Run the tests, re-creating the database (and applying any fresh migrations, etc.).
+  dtdb:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest . --create-db
+  # Run the tests with coverage.
+  dtcov:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest . --cov=stratbot2
+  # Run the tests with coverage, re-creating the database.
+  dtcovdb:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest . --cov=stratbot2 --create-db
+  # Run the tests in parallel.
+  dtp:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest . -n auto --cov=stratbot2 --create-db
+  # Run the tests in parallel with coverage.
+  dtpcov:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest . -n auto --cov=stratbot2
+  # Run the tests in parallel, re-creating the database.
+  dtpdb:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest . -n auto --create-db
+  # Run the tests in parallel with coverage, re-creating the database.
+  dtpcovdb:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django pytest . -n auto --cov=stratbot2 --create-db
+  # Run `mypy`.
+  dmp:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django mypy .
+  # Run `flake8`.
+  dfl:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django flake8 .
+  # Run our own command to create default admin(s).
+  dcda:
+    cmds:
+      - docker compose -f $COMPOSE_FILE run --rm django python manage.py create_default_admins
+
+  # --- Bytewax Dataflows
+  binance_ws:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d binance_websockets
+  alpaca_ws:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d alpaca_websockets
+  alpaca_trades:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d alpaca_trades
+  alpaca_prices:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d alpaca_prices
+  alpaca_spreads:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d alpaca_spreads
+  binance_trades:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d binance_trades
+  pobs:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d potential_outside_bars
+  gappers:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d gappers
+  expando_ftfc:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d expando_ftfc
+  alpaca_bar_consumer:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d alpaca_bar_consumer
+  alpaca_quote_consumer:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d alpaca_quote_consumer
+  binance_bar_consumer:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d binance_bar_consumer
+  binance_quote_consumer:
+    cmds:
+      - docker compose -f $COMPOSE_FILE up -d binance_quote_consumer

@@ -1,0 +1,220 @@
+{% extends "vertical_base.html" %}
+{% load static i18n dashtags humanize %}
+
+{% block title %}{{ object.symbol }} - {% trans "Details" %}{% endblock title %}
+
+{% block content %}
+  <!-- Start Content-->
+  <div class="container-fluid">
+
+    <!-- start page title -->
+    <div class="row col-12">
+      <div class="page-title-box">
+        <div class="page-title-right">
+          <ol class="breadcrumb m-0">
+            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+            <li class="breadcrumb-item active">Symbol Details</li>
+          </ol>
+        </div>
+        <h4 class="page-title">{{ object.symbol }}</h4>
+      </div>
+    </div> <!-- end page title -->
+
+    {%  comment %}
+      {"company_meta.cik": "0000320193",
+       "object.company_meta.name": "Apple Inc.",
+       "object.company_meta.type": "CS",
+       "object.company_meta.active": true,
+       "object.company_meta.locale": "us",
+       "object.company_meta.market": "stocks",
+       "object.company_meta.ticker": "AAPL",
+       "object.company_meta.address": {
+          "city": "CUPERTINO",
+          "state": "CA",
+          "country": null,
+          "address1": "ONE APPLE PARK WAY",
+          "address2": null,
+          "postal_code": "95014"
+       },
+       "object.company_meta.branding": {
+          "icon_url": "https://api.polygon.io/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-11-01_icon.png",
+          "logo_url": "https://api.polygon.io/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-11-01_logo.svg",
+       },
+       "object.company_meta.sic_code": "3571",
+       "object.company_meta.list_date": "1980-12-12",
+       "object.company_meta.market_cap": 2209955752560,
+       "object.company_meta.description": "Apple designs a wide variety of consumer electronic devices, including smartphones (iPhone), tablets (iPad), PCs (Mac), smartwatches (Apple Watch), AirPods, and TV boxes (Apple TV), among others.",
+       "object.company_meta.ticker_root": "AAPL",
+       "object.company_meta.homepage_url": "https://www.apple.com",
+       "object.company_meta.phone_number": "(408) 996-1010",
+       "object.company_meta.currency_name": "usd",
+       "object.company_meta.composite_figi": "BBG000B9XRY4",
+       "object.company_meta.sic_description": "ELECTRONIC COMPUTERS",
+       "object.company_meta.total_employees": 164000,
+       "object.company_meta.primary_exchange": "XNAS",
+       "object.company_meta.share_class_figi": "BBG001S5N8V8",
+       "object.company_meta.weighted_shares_outstanding": 15908118000,
+       "object.company_meta.share_class_shares_outstanding": 15908120000
+      }
+    {% endcomment %}
+
+    <div class="row">
+      <div class="col-xl-8">
+        <div class="card">
+          <div class="card-header px-1 py-0">
+            <h5>
+              <i class="mdi mdi-cards-variant me-1"></i>
+              STRAT Setups
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+
+              <div class="col">
+                <table class="table table-responsive table-hover table-borderless table-nowrap mb-0" id="setupTable">
+                  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+                  <thead class="table-light">
+                  <tr class="px-0 py-0">
+                    <th class="px-0 py-0">TF</th>
+                    <th class="px-0 py-0">Setup</th>
+                    <th class="px-0 py-0">Details</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for setup in setups %}
+                    <tr class="px-0 py-0">
+                      <td class="px-0 py-0">{{ setup.tf }}</td>
+                      <td class="px-0 py-0">{{ setup.pattern.0 }}-{{ setup.pattern.1 }}</td>
+                      <td class="px-1 py-0"><span class="badge badge-info-lighten text-nowrap p-0 m-0">TEST</span></td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div> <! end col -->
+
+              <div class="col">
+                <p class="text-muted mb-0">
+                  <small>
+                    <i class="mdi mdi-information-outline me-1"></i>
+                    Click on a row to view the chart
+                  </small>
+                </p>
+              </div> <! end col -->
+            </div> <!-- end row -->
+
+          </div> <!-- end card-body-->
+        </div> <!-- end card-->
+
+        <div class="card">
+          <div class="card-header px-1 py-0">
+            <h5><i class="mdi mdi-cards-variant me-1"></i>Chart</h5>
+          </div>
+          <!-- #TODO: make this flexible and not fixed width (how, when also defined in JS?)
+          <div class="card-body" style="height:500px;width:700px;">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+              <div id="tradingview_d746f2"></div>
+            </div>
+            <!-- TradingView Widget END -->
+
+            <script type="text/javascript">
+              // Add event listener to all table rows
+              let timeframeRows = document.getElementById('setupTable').rows;
+              for (let i = 0; i < timeframeRows.length; i++) {
+                timeframeRows[i].addEventListener('click', function (e) {
+                  let selectedTimeframe = this.cells[0].innerText;
+                  console.log(selectedTimeframe)
+
+                  // Clear the widget container
+                  let container = document.getElementById('tradingview_d746f2');
+                  while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                  }
+
+                  // Create and load the new TradingView widget
+                  new TradingView.widget(
+                    {
+                      "width": "100%",
+                      "height": "100%",
+                      "symbol": "{{ object.symbol }}",
+                      "interval": selectedTimeframe,
+                      "timezone": "Etc/UTC",
+                      "theme": "dark",
+                      "style": "1",
+                      "locale": "en",
+                      "toolbar_bg": "#f1f3f6",
+                      "enable_publishing": false,
+                      "allow_symbol_change": true,
+                      "container_id": "tradingview_d746f2"
+                    });
+                });
+              }
+            </script>
+          </div> <!-- end card body -->
+        </div> <!-- end card -->
+
+
+
+      </div> <!-- end col -->
+
+
+      <div class="col-md-3">
+        <div class="card mt-2">
+          <div class="card-header px-1 py-0">
+            <h5>
+              <i class="mdi mdi-cards-variant me-1"></i>
+              Company Details
+            </h5>
+          </div>
+          <div class="card-body">
+            {% if object.company_meta %}
+              <img src="{{ object.company_meta.branding.logo_url|add:"?apiKey=Grb3ZBcbDbT5LExUgReWmj8km8l03uXy" }}"
+                   class="rounded-circle avatar-lg img-thumbnail"
+                   alt="profile-image">
+
+              <h4 class="mb-0 mt-2">{{ object.company_meta.name }}</h4>
+              <p class="text-muted font-14">{{ object.company_meta.sic_description }}</p>
+
+              {#                    <button type="button" class="btn btn-success btn-sm mb-2">Follow</button>#}
+              {#                    <button type="button" class="btn btn-danger btn-sm mb-2">Message</button>#}
+
+              <div class="text-start mt-3">
+                <h4 class="font-13 text-uppercase">About:</h4>
+                <p class="text-muted font-13 mb-3">
+                  {{ object.company_meta.description }}
+                </p>
+                <p class="text-muted mb-2 font-13">
+                  <strong>Market Cap:</strong>
+                  <span class="ms-2">${{ object.company_meta.market_cap|divide:1_000_000|floatformat:"2" }}M</span>
+                  {#                          <span class="ms-2">${{ object.company_meta.market_cap }}M</span>#}
+                </p>
+                <p class="text-muted mb-2 font-13">
+                  <strong>Employees:</strong>
+                  <span class="ms-2">{{ object.company_meta.total_employees|intcomma }}</span>
+                </p>
+                <p class="text-muted mb-2 font-13">
+                  <strong>Weighted Shares Outstanding:</strong>
+                  <span class="ms-2">{{ object.company_meta.weighted_shares_outstanding|intcomma }}</span>
+                </p>
+                <p class="text-muted mb-2 font-13">
+                  <strong>Class Shares Outstanding</strong>
+                  <span class="ms-2">{{ object.company_meta.share_class_shares_outstanding|intcomma }}</span>
+                </p>
+                <p class="text-muted mb-2 font-13">
+                  <strong>Website:</strong>
+                  <span class="ms-2">
+                            <a href="{{ object.company_meta.homepage_url }}">{{ object.company_meta.homepage_url }}</a>
+                          </span>
+                </p>
+              </div>
+            {% else %}
+              No data
+            {% endif %}
+          </div> <!-- end card-body -->
+        </div> <!-- end card -->
+      </div> <!-- end col-->
+    </div>
+  </div>
+  <!-- container -->
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "socialaccount/base.html" %}
+{% load i18n static %}
+
+
+{% block title %}{% trans "Sign In" %}{% endblock title%}
+
+{% block card_image %}
+<img class="rounded-l-lg bg-white" src="{% static 'images/socialaccount/google.svg' %}" alt="google brand logo">
+{% endblock card_image %}
+
+{% block card_title %}
+{% if process == "connect" %}
+{% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+{% else %}
+{% blocktrans with provider.name as provider %}Sign in via {{ provider }}{% endblocktrans %}
+{% endif %}
+{% endblock card_title %}
+
+
+{% block card_content %}
+<div>
+    <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+        {% if process == "connect" %}
+        {% blocktrans with provider.name as provider %}You are about to connect a new third party account from {{ provider }}.{% endblocktrans %}
+        {% else %}
+        {% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{ provider }}.{% endblocktrans %}
+        {% endif %}
+    </p>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="py-3 px-5 w-full text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">{% trans "Continue" %}</button>
+</form>
+{% endblock card_content %}

@@ -1,0 +1,101 @@
+# General
+# ------------------------------------------------------------------------------
+argon2-cffi==23.1.0  # https://github.com/hynek/argon2_cffi
+IPython==8.18.1  # https://github.com/ipython/ipython
+Pillow==10.1.0  # https://github.com/python-pillow/Pillow
+python-slugify==8.0.1  # https://github.com/un33k/python-slugify
+pytz==2024.1  # https://github.com/stub42/pytz
+whitenoise==6.6.0  # https://github.com/evansd/whitenoise
+python-dotenv==1.0.0  # https://github.com/theskumar/python-dotenv
+websockets  # https://websockets.readthedocs.io/en/stable/
+apscheduler==3.10.4  # https://github.com/agronholm/apscheduler/
+orjson==3.9.15  # https://github.com/ijl/orjson
+msgspec==0.18.6  # https://github.com/jcrist/msgspec
+rich==13.7.0  # https://rich.readthedocs.io/en/latest/
+pytest==7.4.3  # https://github.com/pytest-dev/pytest
+matplotlib==3.8.3  # https://github.com/matplotlib/matplotlib
+
+# Django
+# ------------------------------------------------------------------------------
+crispy-bootstrap5==2024.2  # https://github.com/django-crispy-forms/crispy-bootstrap5
+django-allauth==0.61.1  # https://github.com/pennersr/django-allauth
+django-crispy-forms==2.1  # https://github.com/django-crispy-forms/django-crispy-forms
+crispy-tailwind==1.0.3  # https://github.com/django-crispy-forms/crispy-tailwind
+django_dirtyfields==1.9.2  # https://github.com/romgar/django-dirtyfields
+django-environ==0.11.2  # https://github.com/joke2k/django-environ
+django-extensions==3.2.3  # https://github.com/django-extensions/django-extensions
+django-filter==23.5  # https://github.com/carltongibson/django-filter
+django-model-utils==4.4.0  # https://github.com/jazzband/django-model-utils
+django==5.0.2  # https://www.djangoproject.com/
+django-htmx==1.17.2  # https://pypi.org/project/django-htmx/
+django-timescaledb==0.2.13  # https://github.com/schlunsen/django-timescaledb
+django-compressor==4.4  # https://django-compressor.readthedocs.io/en/stable/
+daphne==4.0.0  # https://github.com/django/daphne
+Twisted[http2,tls]==23.10.0  # http2 / tls support for Daphne
+channels==4.0.0  # https://channels.readthedocs.io/en/latest/
+django-prometheus==2.3.1  # https://github.com/korfuri/django-prometheus
+django-debug-toolbar==4.3.0  # https://django-debug-toolbar.readthedocs.io/en/latest/
+
+# Django REST Framework
+django-cors-headers==4.3.1 # https://github.com/adamchainz/django-cors-headers
+djangorestframework==3.14.0  # https://github.com/encode/django-rest-framework
+
+# DRF-spectacular for api documentation
+drf-spectacular==0.26.5  # https://github.com/tfranzel/drf-spectacular
+
+# Celery
+# ------------------------------------------------------------------------------
+celery==5.3.6  # https://github.com/celery/celery
+django-celery-beat  # https://github.com/celery/django-celery-beat
+django-celery-results==2.5.1  # https://pypi.org/project/django-celery-results
+flower==2.0.1  # https://github.com/mher/flower
+
+# PostgreSQL
+# ------------------------------------------------------------------------------
+psycopg2-binary==2.9.9  # https://github.com/psycopg/psycopg2
+
+# confluent-kafka
+# ------------------------------------------------------------------------------
+confluent-kafka==2.3.0  # https://github.com/confluentinc/confluent-kafka-python
+
+# Redis
+# ------------------------------------------------------------------------------
+django-redis==5.4.0  # https://github.com/jazzband/django-redis
+hiredis==2.3.2  # https://github.com/redis/hiredis-py
+redis==5.0.2  # https://github.com/redis/redis-py
+redis-timeseries-manager  # https://github.com/ahmadazizi/redis_timeseries_manager
+
+# Python Scientific Computing Stack Related
+# ------------------------------------------------------------------------------
+django_pandas==0.6.6  # https://github.com/chrisdev/django-pandas
+numpy==1.26.4  # https://github.com/numpy/numpy
+pandas==2.2.1  # https://github.com/pandas-dev/pandas
+
+# Pusher
+# ------------------------------------------------------------------------------
+pusher==3.3.2  # https://github.com/pusher/pusher-http-python
+
+# ArcticDB - https://docs.arcticdb.io
+# ------------------------------------------------------------------------------
+# arcticdb==3.0.0  # https://github.com/man-group/ArcticDB/
+
+# Discord
+# ------------------------------------------------------------------------------
+discord-webhook==1.3.1  # https://github.com/lovvskillz/python-discord-webhook
+
+# Finance Libraries
+# ------------------------------------------------------------------------------
+pandas_market_calendars==4.4.0  # https://pypi.org/project/pandas-market-calendars/
+#TA-Lib==0.4.28  # https://github.com/TA-Lib/ta-lib-python
+yfinance==0.2.37   # https://github.com/ranaroussi/yfinance
+alpaca-py==0.16.0  # https://github.com/alpacahq/alpaca-py
+binance-futures-connector==4.0.0  # https://github.com/binance/binance-futures-connector-python
+ccxt==4.1.85  # https://github.com/ccxt/ccxt
+#polygon-api-client==1.13.3  # https://github.com/polygon-io/client-python
+#tda-api==1.6.0  # https://github.com/alexgolec/tda-api
+#twelvedata[pandas]==1.2.12  # https://github.com/twelvedata/twelvedata-python
+
+# Bytexwax / Streaming
+# ------------------------------------------------------------------------------
+bytewax==0.19.0  # https://github.com/bytewax/bytewax
+fastavro==1.9.4  # https://github.com/fastavro/fastavro

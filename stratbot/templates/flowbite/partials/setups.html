@@ -1,0 +1,138 @@
+{% extends 'flowbite/base.html' %}
+{% load static dashtags crispy_forms_tags %}
+
+
+{% block content %}
+<div>
+  <button class="btn"
+          hx-post="/scanner/htmx/"
+          hx-prompt="Enter a string"
+          hx-confirm="Are you sure?"
+          hx-target="#response"
+          hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'>
+    Click me
+  </button>
+  <div id="response"></div>
+</div>
+
+ <div class="text-gray-500">
+    <form action="{%  url 'scanner:filter-setups' %}" method="get">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Filter"/>
+    </form>
+ </div>
+
+{#<form action="{%  url 'scanner:search' %}" method="get">#}
+{#    {% csrf_token %}#}
+{#    <label for="search" class="text-primary">Search Term</label>#}
+{#    <input id="search" type="search" name="q" value="{{ q|default:'' }}"#}
+{#           hx-get="{% url 'scanner:search' %}"#}
+{#           hx-get="{% url 'scanner:search' %}"#}
+{#           hx-trigger="search, keyup delay:200ms changed"#}
+{#           hx-target="tbody"#}
+{#           hx-push-url="true"#}
+{#           hx-indicator="#spinner"/>#}
+{#    <img style="height: 20px" id="spinner" class="htmx-indicator"#}
+{#         src="{%  static 'images/spinning-circles.svg' %}" alt="spinner"/>#}
+{#    <input type="submit" value="Search"/>#}
+{#</form>#}
+
+<nav class="pt-5 pb-3">
+    <div class="flex justify-start items-center">
+        {% with symbol_type="stock" %}
+        <form class="form-inline" id="tf-list">
+            {%  comment %}
+            TODO: add indicator on selected timeframe
+              {% if selected_tf == 'all' %}btn-secondary{% else %}btn-outline-secondary{% endif %}
+            {% endcomment %}
+            <a class="px-3 py-2 text-xs font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-blue-800"
+             role="button" data-tf="all" href="{% url 'scanner:scanner' symbol_type=symbol_type %}?tf=">ALL</a>
+            {% for timeframe in timeframes %}
+            <a class="px-3 py-2 text-xs font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-blue-800"
+              role="button"
+              data-tf="{{ timeframe }}" href="{% url 'scanner:scanner' symbol_type=symbol_type %}?tf={{ timeframe }}">{{ timeframe }}</a>
+            {% endfor %}
+        </form>
+        {% endwith %}
+    </div>
+</nav>
+
+
+{#<div class="col-12">#}
+{#    {%  crispy setup_filter_form %}#}
+{#</div>#}
+
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    {% regroup setups by tf as by_timeframe %}
+    {% for tf in by_timeframe %}
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="top-0 z-50 text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="p-4">
+                    <div class="flex items-center">
+                        <input id="checkbox-all" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="checkbox-all" class="sr-only">checkbox</label>
+                    </div>
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    Symbol
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    TFC
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    TF
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    STRAT
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    L/S
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    Price
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    Trigger
+                </th>
+{#                    <th scope="col" class="px-1 py-1">#}
+{#                        In Force#}
+{#                    </th>#}
+                <th scope="col" class="px-1 py-1">
+                    T1
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    RR
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    PMG
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    Tags
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    Volume
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    ATR
+                </th>
+                <th scope="col" class="px-1 py-1">
+                    Expires
+                </th>
+{#                    <th scope="col" class="px-1 py-1">#}
+{#                        SSS50#}
+{#                    </th>#}
+{#                    <th scope="col" class="px-1 py-1">#}
+{#                        Negated#}
+{#                    </th>#}
+            </tr>
+        </thead>
+        <tbody>
+        {% include 'flowbite/partials/scanner_row.html' %}
+        </tbody>
+    </table>
+{% endfor %}
+</div>
+{% endblock content %}

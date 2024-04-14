@@ -1,0 +1,138 @@
+{% extends "flowbite/base_no_nav.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Docs" %}{% endblock title %}
+
+
+{% block content %}
+<div class="justify-center items-center w-full bg-white rounded-lg shadow lg:flex md:mt-0 lg:max-w-screen-lg 2xl:max:max-w-screen-lg xl:p-0 dark:bg-gray-800">
+    <div class="my-6 p-6 space-y-8 w-full sm:p-8 lg:p-16 lg:py-0">
+        <h2 class="text-2xl font-bold text-gray-900 lg:text-3xl dark:text-white">
+            Frequently asked questions
+        </h2>
+        <div class="grid pt-8 text-left border-t border-gray-200 md:gap-16 dark:border-gray-700 md:grid-cols-2">
+            <div>
+                <div class="mb-10">
+                    <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                        <svg class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        Is this a free service?
+                    </h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Yes. However, paying users will have access to more advanced features including: intraday
+                        timeframes, real-time alerts, watchlists, and more.
+                    </p>
+                </div>
+                <div class="mb-10">
+                    <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                        <svg class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        Where can I learn more about "the strat"?
+                    </h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        The strat is a trading strategy developed by Rob Smith. You can learn more about it by
+                        watching the videos in the playlists below:<br/>
+                        <a href="https://youtube.com/playlist?list=PLoOwDUfJHOPDe7Pm1x2uTbQY3ecJRv8iQ"
+                           class="font-medium underline text-primary-600 dark:text-primary-500 hover:no-underline"
+                           target="_blank" rel="noreferrer">The Strat Principles</a><br/>
+                        <a href="https://youtube.com/playlist?list=PLCL_5L-M8G2WbGNLMyZa_w2wCWpzO67N0"
+                           class="font-medium underline text-primary-600 dark:text-primary-500 hover:no-underline"
+                           target="_blank" rel="noreferrer">Learning #TheStrat A-Z</a>
+                    </p>
+                </div>
+                <div class="mb-10">
+                    <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                        <svg class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        The trigger and/or target price do not match my chart. Why?
+                    </h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        We do not currently have full market coverage (it's incredibly expensive), so OHLC values on
+                        intraday timeframes may be off by a few cents compared to TradingView, thinkorswim, and
+                        other brokers. Setups on the 15, 30, 60, 4H, and D timeframes are re-processed at 12:15am EST
+                        each day and include full market coverage so OHLC values should match your platform.
+                    </p>
+                </div>
+            </div>
+            <div>
+                <div class="mb-10">
+                    <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                        <svg class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        When will you allow signups?
+                    </h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Once we have completed beta testing, signups will be open to all users.
+                    </p>
+                </div>
+                <div class="mb-10">
+                    <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                        <svg class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        When will you add real documentation?
+                    </h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Soon.
+                    </p>
+                </div>
+                <div class="mb-10">
+                    <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                        <svg class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        Any plans for an API?
+                    </h3>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Most certainly.
+                    </p>
+                </div>
+                <div class="mb-10">
+                    <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
+                        <svg class="flex-shrink-0 mr-2 w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        Key Abbreviations / Notes
+                    </h3>
+                    <ul class="text-gray-500 dark:text-gray-400">
+                        <li class="my-2">
+                            RR: estimate using a stop-loss at 50% of the trigger candle
+                        </li>
+                        <li class="my-2">
+                            PMG: identified by 5 or more consecutive HH/LL
+                        </li>
+                        <li class="my-2">
+                            When TFC is displayed in white, last price == open (no direction).
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
